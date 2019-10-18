@@ -18,7 +18,7 @@ from uuid import uuid4
 
 # Global constants
 INPUT_PATH = "input/process_KYC.xlsx"
-APPROX_ROWS = 10000
+APPROX_ROWS = 1000
 DURATION_UNIT = "minutes"
 START = "START"
 END = "END"
@@ -262,7 +262,7 @@ def apply_pafnow_format(df):
             "step_id": "ActivityId",
             "step_name": "ActivityName",
             "start_time": "Timestamp",
-            # "end_time": "TimestampEnd", # This needs a fix from PAFnow Companion
+            "end_time": "TimestampEnd",
         },
         inplace=True,
     )
@@ -270,6 +270,10 @@ def apply_pafnow_format(df):
     # Set date time format to YYYY-MM-DD HH:MM:SS
     df.Timestamp = df.Timestamp.dt.strftime("%Y-%m-%d %H:%M:%S")
     df.TimestampEnd = df.TimestampEnd.dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    # BUG: In pafnow companion! TimestampEnd gives an error. Remove this line when the bug is fixed!
+    df.rename(columns={"TimestampEnd": "TimestampEndDontUse"}, inplace=True)
+
     return df
 
 
